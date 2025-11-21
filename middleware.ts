@@ -1,26 +1,20 @@
-import { auth } from "@/auth"
 import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+import { auth } from "@/auth"
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth
-  const { pathname } = req.nextUrl
+export async function middleware(request: NextRequest) {
+  const session = await auth()
+  const { pathname } = request.nextUrl
 
-  // Protect room routes
-  if (pathname.startsWith('/room')) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
-    }
-  }
-
-  // Protect dashboard routes
-  if (pathname.startsWith('/dashboard')) {
-    if (!isLoggedIn) {
-      return NextResponse.redirect(new URL('/auth/signin', req.url))
+  // Protect room and dashboard routes
+  if (pathname.startsWith('/room') || pathname.startsWith('/dashboard')) {
+    if (!session) {
+      return NextResponse.redirect(new URL('/auth/signin', request.url))
     }
   }
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: ["/room/:path*", "/dashboard/:path*"],
