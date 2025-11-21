@@ -1,18 +1,9 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { auth } from "@/auth"
 
+// Simplified middleware without auth check to avoid Edge runtime issues
+// Auth protection is handled in the page components via server-side checks
 export async function middleware(request: NextRequest) {
-  const session = await auth()
-  const { pathname } = request.nextUrl
-
-  // Protect room and dashboard routes
-  if (pathname.startsWith('/room') || pathname.startsWith('/dashboard')) {
-    if (!session) {
-      return NextResponse.redirect(new URL('/auth/signin', request.url))
-    }
-  }
-
   return NextResponse.next()
 }
 

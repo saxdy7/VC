@@ -4,6 +4,7 @@ import { auth } from '@/auth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 // GET: Fetch messages between two users
 export async function GET(request: Request) {
