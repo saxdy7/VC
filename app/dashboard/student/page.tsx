@@ -13,6 +13,7 @@ import { AnalyticsChart } from '@/components/analytics-chart'
 import { VideoLibrary } from '@/components/video-library'
 import AIChatbot from '@/components/ai-chatbot'
 import { TaskManager } from '@/components/task-manager'
+import { DashboardSidebar } from '@/components/dashboard-sidebar'
 
 export default function StudentDashboard() {
   const router = useRouter()
@@ -40,39 +41,17 @@ export default function StudentDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Header */}
-      <header className="border-b border-border/50 backdrop-blur-sm bg-background/80">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <GraduationCap className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold">Student Dashboard</span>
-          </div>
-          <div className="flex items-center gap-3">
-            {session?.user?.image && (
-              <Image 
-                src={session.user.image} 
-                alt={session.user.name || 'Student'} 
-                width={40} 
-                height={40}
-                className="rounded-full"
-              />
-            )}
-            <div className="hidden md:block">
-              <div className="font-semibold">{session?.user?.name}</div>
-              <div className="text-xs text-muted-foreground">Student</div>
-            </div>
-            <Button variant="outline" size="sm" onClick={() => signOut()}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Sidebar */}
+      <DashboardSidebar
+        userRole="student"
+        userName={session?.user?.name || undefined}
+        userImage={session?.user?.image || undefined}
+        userEmail={session?.user?.email || undefined}
+      />
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      {/* Main Content with left margin for sidebar */}
+      <main className="ml-64 transition-all duration-300 min-h-screen">
+        <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto space-y-8">
           {/* Welcome Section */}
           <div>
@@ -297,6 +276,7 @@ export default function StudentDashboard() {
               Browse Videos
             </Button>
           </div>
+        </div>
         </div>
       </main>
     </div>
