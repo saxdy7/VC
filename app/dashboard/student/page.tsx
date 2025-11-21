@@ -6,8 +6,13 @@ import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { GraduationCap, Calendar, Video, BarChart, MessageSquare, LogOut, BookOpen, Youtube, Trophy } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { GraduationCap, Calendar, Video, BarChart, MessageSquare, LogOut, BookOpen, Youtube, Trophy, Bot } from 'lucide-react'
 import Image from 'next/image'
+import { AnalyticsChart } from '@/components/analytics-chart'
+import { VideoLibrary } from '@/components/video-library'
+import AIChatbot from '@/components/ai-chatbot'
+import { TaskManager } from '@/components/task-manager'
 
 export default function StudentDashboard() {
   const router = useRouter()
@@ -227,19 +232,69 @@ export default function StudentDashboard() {
             </div>
           </Card>
 
+          {/* Detailed Sections in Tabs */}
+          <Tabs defaultValue="analytics" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="tasks">Tasks</TabsTrigger>
+              <TabsTrigger value="videos">Videos</TabsTrigger>
+              <TabsTrigger value="ai-help">AI Help</TabsTrigger>
+              <TabsTrigger value="messages">Messages</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="analytics" className="space-y-4">
+              <AnalyticsChart studentId={session?.user?.email || ''} />
+            </TabsContent>
+            
+            <TabsContent value="tasks">
+              <TaskManager userRole="student" userId={session?.user?.email || ''} />
+            </TabsContent>
+            
+            <TabsContent value="videos">
+              <VideoLibrary />
+            </TabsContent>
+            
+            <TabsContent value="ai-help">
+              <Card className="p-6">
+                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+                  <Bot className="w-5 h-5 text-primary" />
+                  AI Learning Assistant
+                </h2>
+                <AIChatbot />
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="messages">
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5 text-primary" />
+                    Messages
+                  </h2>
+                  <Button onClick={() => router.push('/messages')}>
+                    Open Messages
+                  </Button>
+                </div>
+                <p className="text-muted-foreground">
+                  Communicate with your teachers in real-time. Click "Open Messages" to start chatting.
+                </p>
+              </Card>
+            </TabsContent>
+          </Tabs>
+
           {/* Quick Actions */}
           <div className="grid md:grid-cols-3 gap-4">
-            <Button className="h-16 text-base" size="lg">
-              <Calendar className="w-5 h-5 mr-2" />
-              Book New Appointment
-            </Button>
-            <Button variant="outline" className="h-16 text-base" size="lg">
+            <Button className="h-16 text-base" size="lg" onClick={() => router.push('/messages')}>
               <MessageSquare className="w-5 h-5 mr-2" />
               Message Teacher
             </Button>
             <Button variant="outline" className="h-16 text-base" size="lg">
+              <Calendar className="w-5 h-5 mr-2" />
+              View Schedule
+            </Button>
+            <Button variant="outline" className="h-16 text-base" size="lg">
               <BookOpen className="w-5 h-5 mr-2" />
-              View All Courses
+              Browse Videos
             </Button>
           </div>
         </div>

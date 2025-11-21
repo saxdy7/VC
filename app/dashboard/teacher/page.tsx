@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Video, Calendar, MessageSquare, Users, LogOut, Copy, Plus, BookOpen } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Video, Calendar, MessageSquare, Users, LogOut, Copy, Plus, BookOpen, ClipboardCheck } from 'lucide-react'
 import Image from 'next/image'
+import { TaskManager } from '@/components/task-manager'
 
 export default function TeacherDashboard() {
   const router = useRouter()
@@ -250,7 +252,7 @@ export default function TeacherDashboard() {
                           <div className="font-semibold">{student.name}</div>
                           <div className="text-xs text-muted-foreground">{student.sessions} sessions</div>
                         </div>
-                        <Button size="sm" variant="ghost">
+                        <Button size="sm" variant="ghost" onClick={() => router.push('/messages')}>
                           <MessageSquare className="w-4 h-4" />
                         </Button>
                       </div>
@@ -260,6 +262,51 @@ export default function TeacherDashboard() {
               )}
             </div>
           </Card>
+
+          {/* Task Management Section */}
+          <Tabs defaultValue="tasks" className="space-y-4">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="tasks">Task Management</TabsTrigger>
+              <TabsTrigger value="messages">Messages</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="tasks">
+              <TaskManager userRole="teacher" userId={session?.user?.email || ''} />
+            </TabsContent>
+            
+            <TabsContent value="messages">
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5 text-primary" />
+                    Messages
+                  </h2>
+                  <Button onClick={() => router.push('/messages')}>
+                    Open Messages
+                  </Button>
+                </div>
+                <p className="text-muted-foreground">
+                  Communicate with your students in real-time. Click "Open Messages" to start chatting.
+                </p>
+              </Card>
+            </TabsContent>
+          </Tabs>
+
+          {/* Quick Actions */}
+          <div className="grid md:grid-cols-3 gap-4">
+            <Button className="h-16 text-base" size="lg" onClick={() => router.push('/messages')}>
+              <MessageSquare className="w-5 h-5 mr-2" />
+              Message Students
+            </Button>
+            <Button variant="outline" className="h-16 text-base" size="lg">
+              <Calendar className="w-5 h-5 mr-2" />
+              View Schedule
+            </Button>
+            <Button variant="outline" className="h-16 text-base" size="lg">
+              <ClipboardCheck className="w-5 h-5 mr-2" />
+              Grade Tasks
+            </Button>
+          </div>
         </div>
       </main>
     </div>
