@@ -1,95 +1,115 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { MessageSquare, ArrowLeft } from 'lucide-react'
-import Messages from '@/components/messages'
-import Image from 'next/image'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Award, Calendar, Video, TrendingUp, BookOpen } from 'lucide-react'
+import { DashboardSidebar } from '@/components/dashboard-sidebar'
 
-export default function MessagesPage() {
-  const router = useRouter()
+export default function StudentDashboard() {
   const { data: session } = useSession()
-  const [selectedUser, setSelectedUser] = useState<any>(null)
-  const [users, setUsers] = useState([])
-
-  useEffect(() => {
-    // Fetch users to chat with (teachers or students)
-    // For now, using sample data
-    setUsers([
-      { id: '1', name: 'John Teacher', image: null, role: 'teacher', lastMessage: 'See you in the next session!', time: '2m ago' },
-      { id: '2', name: 'Sarah Student', image: null, role: 'student', lastMessage: 'Thank you for the help', time: '1h ago' },
-    ])
-  }, [])
-
-  if (selectedUser) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
-        <div className="max-w-4xl mx-auto">
-          <Button variant="ghost" onClick={() => setSelectedUser(null)} className="mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Messages
-          </Button>
-          <Messages
-            recipientId={selectedUser.id}
-            recipientName={selectedUser.name}
-            recipientImage={selectedUser.image}
-          />
-        </div>
-      </div>
-    )
-  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <header className="border-b border-border/50 backdrop-blur-sm bg-background/80">
-        <div className="container mx-auto px-4 py-4 flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={() => router.back()}>
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <MessageSquare className="w-6 h-6 text-primary" />
-          <h1 className="text-xl font-bold">Messages</h1>
-        </div>
-      </header>
+    <div className="flex min-h-screen">
+      <DashboardSidebar userRole="student" />
+      
+      <div className="flex-1 ml-64">
+        <div className="container mx-auto px-8 py-8 space-y-8">
+          {/* Welcome Section */}
+          <div>
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome, {session?.user?.name || 'Student'}
+            </h1>
+            <p className="text-muted-foreground">
+              Track your progress and manage your learning activities
+            </p>
+          </div>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-4">
-          {users.length === 0 ? (
-            <Card className="p-12 text-center bg-card/50">
-              <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-              <h2 className="text-xl font-semibold mb-2">No conversations yet</h2>
-              <p className="text-muted-foreground">Start a conversation with your teachers or students</p>
-            </Card>
-          ) : (
-            users.map((user: any) => (
-              <Card
-                key={user.id}
-                className="p-4 hover:bg-card/70 transition-colors cursor-pointer bg-card/50"
-                onClick={() => setSelectedUser(user)}
-              >
+          {/* Stats Grid */}
+          <div className="grid md:grid-cols-4 gap-6">
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    {user.image ? (
-                      <Image src={user.image} alt={user.name} width={48} height={48} className="rounded-full" />
-                    ) : (
-                      <span className="text-lg font-semibold text-primary">{user.name[0]}</span>
-                    )}
+                  <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <Award className="w-6 h-6 text-blue-500" />
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold truncate">{user.name}</h3>
-                      <span className="text-xs text-muted-foreground">{user.time}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground truncate">{user.lastMessage}</p>
+                  <div>
+                    <div className="text-2xl font-bold">0</div>
+                    <div className="text-sm text-muted-foreground">Total Points</div>
                   </div>
                 </div>
-              </Card>
-            ))
-          )}
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-green-500" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">0</div>
+                    <div className="text-sm text-muted-foreground">Appointments</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                    <Video className="w-6 h-6 text-purple-500" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">0</div>
+                    <div className="text-sm text-muted-foreground">Sessions</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-orange-500" />
+                  </div>
+                  <div>
+                    <div className="text-2xl font-bold">0</div>
+                    <div className="text-sm text-muted-foreground">Avg Score</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Info Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="w-6 h-6 text-primary" />
+                Learning Hub
+              </CardTitle>
+              <CardDescription>
+                Use the sidebar to access all your learning tools
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                Explore your learning resources using the sidebar:
+              </p>
+              <ul className="space-y-2 text-sm">
+                <li>📊 <strong>Analytics</strong> - Track your performance</li>
+                <li>✅ <strong>Tasks</strong> - View and submit assignments</li>
+                <li>🎥 <strong>Videos</strong> - Access course materials</li>
+                <li>🤖 <strong>AI Help</strong> - Get instant learning assistance</li>
+                <li>💬 <strong>Messages</strong> - Chat with teachers</li>
+                <li>📅 <strong>Appointments</strong> - Book sessions with teachers</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+      </div>
     </div>
   )
 }
