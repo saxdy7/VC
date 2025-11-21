@@ -39,7 +39,7 @@ export async function GET() {
         })
       : { _avg: { points: 0 } }
 
-    const recentGrades = user.grades.map(grade => ({
+    const recentGrades = user.grades.map((grade: any) => ({
       id: grade.id,
       taskName: grade.task.question.substring(0, 50) + '...',
       points: grade.points,
