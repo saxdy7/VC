@@ -3,9 +3,20 @@
 import { signIn } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Video } from "lucide-react"
+import { Video, GraduationCap, BookOpen } from "lucide-react"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
 
 export default function SignInPage() {
+  const searchParams = useSearchParams()
+  const initialRole = searchParams.get('role') as 'student' | 'teacher' | null
+  const [selectedRole, setSelectedRole] = useState<'student' | 'teacher' | null>(initialRole)
+
+  const handleSignIn = () => {
+    if (!selectedRole) return
+    signIn('google', { callbackUrl: `/dashboard/${selectedRole}` })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
       <Card className="max-w-md w-full p-8 space-y-6 bg-card/50 backdrop-blur-sm border-border/50">
@@ -15,18 +26,45 @@ export default function SignInPage() {
           </div>
           
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold">Welcome to VideoConnect</h1>
+            <h1 className="text-3xl font-bold">Welcome Back</h1>
             <p className="text-muted-foreground">
-              Sign in to start or join video meetings
+              Choose your role to continue
             </p>
           </div>
         </div>
 
         <div className="space-y-4">
+          {/* Role Selection */}
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setSelectedRole('student')}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                selectedRole === 'student' 
+                  ? 'border-primary bg-primary/10' 
+                  : 'border-border hover:border-primary/50'
+              }`}
+            >
+              <GraduationCap className={`w-8 h-8 mx-auto mb-2 ${selectedRole === 'student' ? 'text-primary' : 'text-muted-foreground'}`} />
+              <div className="font-semibold text-sm">Student</div>
+            </button>
+            <button
+              onClick={() => setSelectedRole('teacher')}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                selectedRole === 'teacher' 
+                  ? 'border-primary bg-primary/10' 
+                  : 'border-border hover:border-primary/50'
+              }`}
+            >
+              <BookOpen className={`w-8 h-8 mx-auto mb-2 ${selectedRole === 'teacher' ? 'text-primary' : 'text-muted-foreground'}`} />
+              <div className="font-semibold text-sm">Teacher</div>
+            </button>
+          </div>
+
           <Button 
-            onClick={() => signIn('google', { callbackUrl: '/' })}
+            onClick={handleSignIn}
             className="w-full h-12 text-base font-medium"
             size="lg"
+            disabled={!selectedRole}
           >
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path

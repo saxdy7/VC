@@ -6,7 +6,7 @@ import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
-import { Video, Users, Shield, Zap, LogOut } from 'lucide-react'
+import { Video, Users, Shield, Zap, LogOut, GraduationCap, BookOpen, MessageSquare, Calendar, BarChart, Brain, Youtube } from 'lucide-react'
 import Image from 'next/image'
 
 export default function HomePage() {
@@ -96,10 +96,10 @@ export default function HomePage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="text-5xl md:text-6xl font-bold text-balance leading-tight">
-                  Connect with anyone, anywhere
+                  Interactive Learning Platform
                 </h1>
                 <p className="text-xl text-muted-foreground text-pretty leading-relaxed">
-                  Experience crystal-clear video calls with advanced features. No downloads required.
+                  Connect teachers and students for personalized, interactive online learning with real-time evaluation and AI-powered assistance.
                 </p>
               </div>
 
@@ -146,24 +146,22 @@ export default function HomePage() {
                 </div>
               </Card>
 
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-4 pt-4">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">100+</div>
-                  <div className="text-sm text-muted-foreground">Participants</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">HD</div>
-                  <div className="text-sm text-muted-foreground">Video Quality</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">24/7</div>
-                  <div className="text-sm text-muted-foreground">Available</div>
-                </div>
+              {/* Role Selection */}
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <Card className="p-6 text-center bg-primary/5 border-primary/20 hover:bg-primary/10 transition-colors cursor-pointer" onClick={() => router.push(session ? '/dashboard/student' : '/auth/signin?role=student')}>
+                  <GraduationCap className="w-12 h-12 text-primary mx-auto mb-3" />
+                  <h3 className="font-bold text-lg mb-1">I'm a Student</h3>
+                  <p className="text-sm text-muted-foreground">Book appointments, learn, and get evaluated</p>
+                </Card>
+                <Card className="p-6 text-center bg-primary/5 border-primary/20 hover:bg-primary/10 transition-colors cursor-pointer" onClick={() => router.push(session ? '/dashboard/teacher' : '/auth/signin?role=teacher')}>
+                  <BookOpen className="w-12 h-12 text-primary mx-auto mb-3" />
+                  <h3 className="font-bold text-lg mb-1">I'm a Teacher</h3>
+                  <p className="text-sm text-muted-foreground">Create meetings, evaluate students, and track progress</p>
+                </Card>
               </div>
             </div>
 
-            {/* Right Column - Features */}
+            {/* Right Column - Platform Features */}
             <div className="space-y-4">
               <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/70 transition-colors">
                 <div className="flex items-start gap-4">
@@ -171,9 +169,9 @@ export default function HomePage() {
                     <Video className="w-6 h-6 text-primary" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-semibold text-lg">HD Video & Audio</h3>
+                    <h3 className="font-semibold text-lg">Live Interactive Sessions</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      Crystal-clear video quality with noise cancellation for the best experience
+                      HD video calls with screen sharing for real-time task evaluation
                     </p>
                   </div>
                 </div>
@@ -182,12 +180,12 @@ export default function HomePage() {
               <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/70 transition-colors">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-primary" />
+                    <MessageSquare className="w-6 h-6 text-primary" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-semibold text-lg">100+ Participants</h3>
+                    <h3 className="font-semibold text-lg">Direct Messaging</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      Host large meetings with up to 100 participants simultaneously
+                      Chat directly with teachers and students for quick questions
                     </p>
                   </div>
                 </div>
@@ -196,12 +194,12 @@ export default function HomePage() {
               <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/70 transition-colors">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-6 h-6 text-primary" />
+                    <Calendar className="w-6 h-6 text-primary" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-semibold text-lg">Secure & Private</h3>
+                    <h3 className="font-semibold text-lg">Easy Appointment Booking</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      End-to-end encryption ensures your conversations stay private
+                      Students can book sessions with their teachers seamlessly
                     </p>
                   </div>
                 </div>
@@ -210,18 +208,136 @@ export default function HomePage() {
               <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/70 transition-colors">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Zap className="w-6 h-6 text-primary" />
+                    <Brain className="w-6 h-6 text-primary" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-semibold text-lg">Instant Access</h3>
+                    <h3 className="font-semibold text-lg">AI-Powered Assistance</h3>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      No downloads or installations required. Start meeting instantly
+                      Get instant help understanding incorrect answers and learning
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/70 transition-colors">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <BarChart className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-lg">Performance Analytics</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Track progress with detailed marks, points, and analysis
+                    </p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50 hover:bg-card/70 transition-colors">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <Youtube className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-lg">Curated Video Library</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Access top educational videos directly within the platform
                     </p>
                   </div>
                 </div>
               </Card>
             </div>
           </div>
+
+          {/* How It Works Section */}
+          <section id="features" className="mt-24 pt-16 border-t border-border/50">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold mb-4">How It Works</h2>
+              <p className="text-xl text-muted-foreground">Simple steps to get started</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* For Students */}
+              <Card className="p-8 bg-card/50 backdrop-blur-sm border-border/50">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center">
+                    <GraduationCap className="w-7 h-7 text-primary-foreground" />
+                  </div>
+                  <h3 className="text-2xl font-bold">For Students</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">1</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Sign Up & Choose Role</h4>
+                      <p className="text-sm text-muted-foreground">Create your account and select "Student" profile</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">2</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Book Appointments</h4>
+                      <p className="text-sm text-muted-foreground">Schedule sessions with your teachers</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">3</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Join Sessions</h4>
+                      <p className="text-sm text-muted-foreground">Share your screen and complete tasks in real-time</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">4</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Get Evaluated & Learn</h4>
+                      <p className="text-sm text-muted-foreground">Receive instant feedback and AI assistance for improvement</p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              {/* For Teachers */}
+              <Card className="p-8 bg-card/50 backdrop-blur-sm border-border/50">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-14 h-14 rounded-xl bg-primary flex items-center justify-center">
+                    <BookOpen className="w-7 h-7 text-primary-foreground" />
+                  </div>
+                  <h3 className="text-2xl font-bold">For Teachers</h3>
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">1</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Sign Up & Choose Role</h4>
+                      <p className="text-sm text-muted-foreground">Create your account and select "Teacher" profile</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">2</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Create Meeting Links</h4>
+                      <p className="text-sm text-muted-foreground">Generate and share meeting links with students</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">3</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Assign Tasks</h4>
+                      <p className="text-sm text-muted-foreground">Create questions and watch students perform in real-time</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 font-bold text-primary">4</div>
+                    <div>
+                      <h4 className="font-semibold mb-1">Evaluate & Track</h4>
+                      <p className="text-sm text-muted-foreground">Grade students and monitor their progress with analytics</p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </section>
         </div>
       </main>
 
