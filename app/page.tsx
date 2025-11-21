@@ -2,13 +2,16 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
-import { Video, Users, Shield, Zap } from 'lucide-react'
+import { Video, Users, Shield, Zap, LogOut } from 'lucide-react'
+import Image from 'next/image'
 
 export default function HomePage() {
   const router = useRouter()
+  const { data: session } = useSession()
   const [roomId, setRoomId] = useState('')
   const [userName, setUserName] = useState('')
 
@@ -46,7 +49,36 @@ export default function HomePage() {
             <a href="#about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               About
             </a>
-            <Button variant="outline" size="sm">Sign In</Button>
+            {session ? (
+              <div className="flex items-center gap-3">
+                {session.user?.image && (
+                  <Image 
+                    src={session.user.image} 
+                    alt={session.user.name || 'User'} 
+                    width={32} 
+                    height={32}
+                    className="rounded-full"
+                  />
+                )}
+                <span className="text-sm font-medium">{session.user?.name}</span>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => signOut()}
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => router.push('/auth/signin')}
+              >
+                Sign In
+              </Button>
+            )}
           </nav>
         </div>
       </header>
