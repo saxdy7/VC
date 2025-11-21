@@ -7,6 +7,11 @@ const nextConfig = {
     unoptimized: true,
   },
   reactStrictMode: false,
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["vc-silk-eta.vercel.app"],
+    },
+  },
 }
 
 export default nextConfig
