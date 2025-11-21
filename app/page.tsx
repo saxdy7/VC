@@ -51,16 +51,21 @@ export default function HomePage() {
             </a>
             {session ? (
               <div className="flex items-center gap-3">
-                {session.user?.image && (
-                  <Image 
-                    src={session.user.image} 
-                    alt={session.user.name || 'User'} 
-                    width={32} 
-                    height={32}
-                    className="rounded-full"
-                  />
-                )}
-                <span className="text-sm font-medium">{session.user?.name}</span>
+                <button 
+                  onClick={() => router.push('/profile')}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                >
+                  {session.user?.image && (
+                    <Image 
+                      src={session.user.image} 
+                      alt={session.user.name || 'User'} 
+                      width={32} 
+                      height={32}
+                      className="rounded-full"
+                    />
+                  )}
+                  <span className="text-sm font-medium">{session.user?.name}</span>
+                </button>
                 <Button 
                   variant="outline" 
                   size="sm"
