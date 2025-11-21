@@ -2,38 +2,41 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { GraduationCap, Calendar, Video, BarChart, MessageSquare, LogOut, BookOpen, Youtube, Trophy, Bot } from 'lucide-react'
+import { MessageSquare, ArrowLeft } from 'lucide-react'
+import Messages from '@/components/messages'
 import Image from 'next/image'
-import { AnalyticsChart } from '@/components/analytics-chart'
-import { VideoLibrary } from '@/components/video-library'
-import AIChatbot from '@/components/ai-chatbot'
-import { TaskManager } from '@/components/task-manager'
-import { DashboardSidebar } from '@/components/dashboard-sidebar'
 
-export default function StudentDashboard() {
+export default function MessagesPage() {
   const router = useRouter()
-  const { data: session, status } = useSession()
-  const [appointments, setAppointments] = useState([])
-  const [totalPoints, setTotalPoints] = useState(0)
-  const [recentGrades, setRecentGrades] = useState([])
+  const { data: session } = useSession()
+  const [selectedUser, setSelectedUser] = useState<any>(null)
+  const [users, setUsers] = useState([])
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin?role=student')
-    }
-  }, [status, router])
+    // Fetch users to chat with (teachers or students)
+    // For now, using sample data
+    setUsers([
+      { id: '1', name: 'John Teacher', image: null, role: 'teacher', lastMessage: 'See you in the next session!', time: '2m ago' },
+      { id: '2', name: 'Sarah Student', image: null, role: 'student', lastMessage: 'Thank you for the help', time: '1h ago' },
+    ])
+  }, [])
 
-  if (status === 'loading') {
+  if (selectedUser) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading dashboard...</p>
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4">
+        <div className="max-w-4xl mx-auto">
+          <Button variant="ghost" onClick={() => setSelectedUser(null)} className="mb-4">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Messages
+          </Button>
+          <Messages
+            recipientId={selectedUser.id}
+            recipientName={selectedUser.name}
+            recipientImage={selectedUser.image}
+          />
         </div>
       </div>
     )
@@ -41,242 +44,50 @@ export default function StudentDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      {/* Sidebar */}
-      <DashboardSidebar
-        userRole="student"
-        userName={session?.user?.name || undefined}
-        userImage={session?.user?.image || undefined}
-        userEmail={session?.user?.email || undefined}
-      />
-
-      {/* Main Content with left margin for sidebar */}
-      <main className="ml-64 transition-all duration-300 min-h-screen">
-        <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto space-y-8">
-          {/* Welcome Section */}
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome back, {session?.user?.name?.split(' ')[0]}!</h1>
-            <p className="text-muted-foreground">Track your progress and manage your learning</p>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-                  <Trophy className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">{totalPoints}</div>
-                  <div className="text-sm text-muted-foreground">Total Points</div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-blue-500" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">0</div>
-                  <div className="text-sm text-muted-foreground">Appointments</div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
-                  <Video className="w-6 h-6 text-green-500" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">0</div>
-                  <div className="text-sm text-muted-foreground">Sessions</div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                  <BarChart className="w-6 h-6 text-orange-500" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">0%</div>
-                  <div className="text-sm text-muted-foreground">Avg Score</div>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Upcoming Appointments */}
-            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-primary" />
-                  Upcoming Sessions
-                </h2>
-                <Button size="sm">
-                  Book Appointment
-                </Button>
-              </div>
-              <div className="space-y-3">
-                {appointments.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Calendar className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>No appointments scheduled</p>
-                    <p className="text-sm">Book a session with your teacher to get started</p>
-                  </div>
-                ) : (
-                  appointments.map((apt: any) => (
-                    <Card key={apt.id} className="p-4 bg-background/50">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold">{apt.teacherName}</div>
-                          <div className="text-sm text-muted-foreground">{apt.subject}</div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-sm font-medium">{apt.date}</div>
-                          <div className="text-xs text-muted-foreground">{apt.time}</div>
-                        </div>
-                      </div>
-                      <Button size="sm" className="w-full mt-3" variant="outline">
-                        <Video className="w-4 h-4 mr-2" />
-                        Join Session
-                      </Button>
-                    </Card>
-                  ))
-                )}
-              </div>
-            </Card>
-
-            {/* Recent Performance */}
-            <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
-              <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <BarChart className="w-5 h-5 text-primary" />
-                Recent Performance
-              </h2>
-              <div className="space-y-3">
-                {recentGrades.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <BarChart className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>No grades yet</p>
-                    <p className="text-sm">Complete tasks to see your performance</p>
-                  </div>
-                ) : (
-                  recentGrades.map((grade: any) => (
-                    <Card key={grade.id} className="p-4 bg-background/50">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="font-semibold">{grade.taskName}</div>
-                        <div className="flex items-center gap-2">
-                          <div className="text-2xl font-bold text-primary">{grade.points}</div>
-                          <div className="text-sm text-muted-foreground">pts</div>
-                        </div>
-                      </div>
-                      {grade.feedback && (
-                        <p className="text-sm text-muted-foreground">{grade.feedback}</p>
-                      )}
-                    </Card>
-                  ))
-                )}
-              </div>
-            </Card>
-          </div>
-
-          {/* Course Videos Section */}
-          <Card className="p-6 bg-card/50 backdrop-blur-sm border-border/50">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Youtube className="w-5 h-5 text-primary" />
-              Recommended Learning Videos
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {[
-                { id: 1, title: "Introduction to Programming", subject: "Computer Science", views: "1.2M" },
-                { id: 2, title: "Algebra Fundamentals", subject: "Mathematics", views: "850K" },
-                { id: 3, title: "Scientific Method Explained", subject: "Science", views: "620K" },
-              ].map((video) => (
-                <Card key={video.id} className="p-4 bg-background/50 hover:bg-background/70 transition-colors cursor-pointer">
-                  <div className="aspect-video bg-muted rounded-lg mb-3 flex items-center justify-center">
-                    <Youtube className="w-12 h-12 text-muted-foreground" />
-                  </div>
-                  <h3 className="font-semibold mb-1">{video.title}</h3>
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{video.subject}</span>
-                    <span>{video.views} views</span>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </Card>
-
-          {/* Detailed Sections in Tabs */}
-          <Tabs defaultValue="analytics" className="space-y-4">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="tasks">Tasks</TabsTrigger>
-              <TabsTrigger value="videos">Videos</TabsTrigger>
-              <TabsTrigger value="ai-help">AI Help</TabsTrigger>
-              <TabsTrigger value="messages">Messages</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="analytics" className="space-y-4">
-              <AnalyticsChart studentId={session?.user?.email || ''} />
-            </TabsContent>
-            
-            <TabsContent value="tasks">
-              <TaskManager userRole="student" userId={session?.user?.email || ''} />
-            </TabsContent>
-            
-            <TabsContent value="videos">
-              <VideoLibrary />
-            </TabsContent>
-            
-            <TabsContent value="ai-help">
-              <Card className="p-6">
-                <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                  <Bot className="w-5 h-5 text-primary" />
-                  AI Learning Assistant
-                </h2>
-                <AIChatbot />
-              </Card>
-            </TabsContent>
-            
-            <TabsContent value="messages">
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5 text-primary" />
-                    Messages
-                  </h2>
-                  <Button onClick={() => router.push('/messages')}>
-                    Open Messages
-                  </Button>
-                </div>
-                <p className="text-muted-foreground">
-                  Communicate with your teachers in real-time. Click "Open Messages" to start chatting.
-                </p>
-              </Card>
-            </TabsContent>
-          </Tabs>
-
-          {/* Quick Actions */}
-          <div className="grid md:grid-cols-3 gap-4">
-            <Button className="h-16 text-base" size="lg" onClick={() => router.push('/messages')}>
-              <MessageSquare className="w-5 h-5 mr-2" />
-              Message Teacher
-            </Button>
-            <Button variant="outline" className="h-16 text-base" size="lg">
-              <Calendar className="w-5 h-5 mr-2" />
-              View Schedule
-            </Button>
-            <Button variant="outline" className="h-16 text-base" size="lg">
-              <BookOpen className="w-5 h-5 mr-2" />
-              Browse Videos
-            </Button>
-          </div>
+      <header className="border-b border-border/50 backdrop-blur-sm bg-background/80">
+        <div className="container mx-auto px-4 py-4 flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <MessageSquare className="w-6 h-6 text-primary" />
+          <h1 className="text-xl font-bold">Messages</h1>
         </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto space-y-4">
+          {users.length === 0 ? (
+            <Card className="p-12 text-center bg-card/50">
+              <MessageSquare className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
+              <h2 className="text-xl font-semibold mb-2">No conversations yet</h2>
+              <p className="text-muted-foreground">Start a conversation with your teachers or students</p>
+            </Card>
+          ) : (
+            users.map((user: any) => (
+              <Card
+                key={user.id}
+                className="p-4 hover:bg-card/70 transition-colors cursor-pointer bg-card/50"
+                onClick={() => setSelectedUser(user)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    {user.image ? (
+                      <Image src={user.image} alt={user.name} width={48} height={48} className="rounded-full" />
+                    ) : (
+                      <span className="text-lg font-semibold text-primary">{user.name[0]}</span>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <h3 className="font-semibold truncate">{user.name}</h3>
+                      <span className="text-xs text-muted-foreground">{user.time}</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground truncate">{user.lastMessage}</p>
+                  </div>
+                </div>
+              </Card>
+            ))
+          )}
         </div>
       </main>
     </div>
